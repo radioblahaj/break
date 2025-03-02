@@ -1,16 +1,35 @@
-function onRightClick() {
-    console.log("hi")
-    const sendRight = fetch("http://localhost:3000/right", {
+function rightTurn() {
+    fetch("http://localhost:3001/right", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            userId: "hi",
-            channel: "hi"
-        })
+        }
     });
+    console.log("signaling right turn");
 }
+
+function leftTurn() {
+    fetch("http://localhost:3001/left", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    console.log("signaling left turn");
+}
+
+function breakSignal() {
+    fetch("http://localhost:3001/break", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    console.log("signaling break");
+}
+
+// accelerometer
 
 function enableMotion() {
     // feature detect
@@ -19,28 +38,45 @@ function enableMotion() {
     }
 }
 
+let movingAvgAcl = [...Array(100).keys()];
+
+function readAcl(newAcl) {
+    movingAvgAcl.shift();
+    movingAvgAcl.push(newAcl);
+    let sum = 0;
+    for (let i = 0; i < movingAvgAcl.length; i++) {
+        sum += movingAvgAcl[i];
+    }
+    return sum / movingAvgAcl.length;
+}
 
 window.onload = () => {
-
     const changeme = document.getElementById("changeme");
     const body = document.getElementById("body");
 
     let angle = 0;
 
     window.ondeviceorientation = (event) => {
-        angle = event.alpha;
+        if (event.angle) {
+            angle = event.alpha;
+        }
     };
 
-    window.ondevicemotion = (event) => {
-        a = event.acceleration.x
-        b = event.acceleration.y
-        math = b * (1/Math.cos(Math.atan(b/a)))
+    bounce = false;
 
-        if (math > 4) {
-            changeme.innerHTML = `math: ${math.toFixed(0)}`;
-            body.style.backgroundColor = "red";
-        } else {
-            body.style.backgroundColor = "white";
+    window.ondevicemotion = (event) => {
+        // x = event.acceleration.x
+        z = readAcl(event.acceleration.z)
+
+        changeme.innerHTML = `${z} <br> ${angle.toFixed(0)}deg`;
+
+        if (z < -0.15 && !bounce) {
+            breakSignal();
+            bounce = true;
+
+            setTimeout(() => {
+                bounce = false;
+            }, 5000)
         }
     }
 }

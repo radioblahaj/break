@@ -1,67 +1,49 @@
 const https = require('https')
 const express = require('express')
-const { SerialPort } = require('serialport');
 const cors = require('cors');
 const fs = require('fs')
 
-const app = express()
-const port = 3000
+const httpsApp = express()
+const httpApp = express()
 
-var expressWs = require('express-ws')(app);
-app.use(cors());
-app.use(express.json());
-app.use(express.static(__dirname + '/public'));
+// var expressWs = require('express-ws')(app);
+httpApp.use(express.json());
+httpApp.use(cors());
 
-// SerialPort.list().then(ports => {
-//     ports.forEach(port => {
-//         console.log(port.path);
-//     });
-// }).catch(err => {
-//     console.error('Error listing ports', err);
-// });
+httpsApp.use(cors());
+httpsApp.use(express.static(__dirname + '/public'));
 
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-}
+const lights = require('./lights');
 
-async function rightBlink() {
-    for (let i = 0; i < 5; i++) {
-        const sendB = pico.write('B', err => {
-            if (err) {
-                return console.log('Error on write: ', err.message);
-            }
-            console.log('B');
-        })
-        await sleep(1000)
-        console.log(sendB)
-        const sendF = pico.write('F', err => {
-            if (err) {
-                return console.log('Error on write: ', err.message);
-            }
-            console.log('F');
-        });
-        console.log(sendF)
-        await sleep(1000)
-    }
-}
-
-const pico = new SerialPort({
-    path: '/dev/tty.usbmodem1201',
-    baudRate: 9600,
-})
-
-app.get('/', (req, res) => {
+httpsApp.get('/', (req, res) => {
     res.sendFile(__dirname + '/site/index.html')
 });
 
-app.post('/right', async (req, res) => {
-    await rightBlink();
+httpApp.post('/left', async (req, res) => {
+    await lights.leftBlink();
 
-})
+    return res.json({ success: true });
+});
+
+httpApp.post('/right', async (req, res) => {
+    await lights.rightBlink();
+
+    return res.json({ success: true });
+});
+
+httpApp.post('/break', async (req, res) => {
+    await lights.breakLight();
+
+    return res.json({ success: true });
+});
 
 https.createServer({
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.cert')    
-}, app).listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+}, httpsApp).listen(3000, () => {
+    console.log(`Example app listening on port ${3000}`)
+});
+
+httpApp.listen(3001, () => {
+    console.log(`Example app listening on port ${3001}`)
+});
