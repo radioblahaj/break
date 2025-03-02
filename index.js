@@ -42,11 +42,11 @@ httpApp.post('/break', async (req, res) => {
 https.createServer({
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.cert')    
-}, httpsApp).listen(3000, () => {
-    console.log(`Example app listening on port ${3000}`)
+}, httpsApp).listen(3000, '0.0.0.0', () => {
+    console.log(`Example app listening on port ${3000}`),
 });
 
-httpApp.listen(3001, () => {
+httpApp.listen(3001, '0.0.0.0', () => {
     console.log(`Example app listening on port ${3001}`)
 })
 
