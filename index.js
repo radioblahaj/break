@@ -1,3 +1,5 @@
+(async () => {
+
 const https = require('https')
 const express = require('express')
 const cors = require('cors');
@@ -13,7 +15,7 @@ httpApp.use(cors());
 httpsApp.use(cors());
 httpsApp.use(express.static(__dirname + '/public'));
 
-const lights = require('./lights');
+const lights = await (require('./lights'))();
 
 httpsApp.get('/', (req, res) => {
     res.sendFile(__dirname + '/site/index.html')
@@ -46,4 +48,6 @@ https.createServer({
 
 httpApp.listen(3001, () => {
     console.log(`Example app listening on port ${3001}`)
-});
+})
+
+})();
