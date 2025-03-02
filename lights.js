@@ -1,17 +1,23 @@
 const { SerialPort } = require('serialport');
 
-// SerialPort.list().then(ports => {
-//     ports.forEach(port => {
-//         console.log(port.path);
-//     });
-// }).catch(err => {
-//     console.error('Error listing ports', err);
-// });
+let picoPort;
 
-// const pico = new SerialPort({
-//     path: '/dev/tty.usbmodem1201',
-//     baudRate: 9600,
-// })
+SerialPort.list().then(ports => {
+    ports.forEach(port => {
+        console.log(port);
+        if (port.startsWith('/dev/tty.usbmodem')) {
+            picoPort = port;
+        }
+    });
+}).catch(err => {
+    console.error('Error listing ports', err);
+});
+
+
+const pico = new SerialPort({
+    path: picoPort,
+    baudRate: 9600,
+})
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
