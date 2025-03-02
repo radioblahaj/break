@@ -4,6 +4,8 @@ Ever wanted to become a car? Now YOU can use turn signals & lights as well!
 
 Toot your horn, and use the break and turn signals to let those around you know where you're walking. (manitej not included)
 
+![image of the "car"](car.png)
+
 ## Video Demo
 
 Soon
