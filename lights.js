@@ -35,12 +35,12 @@ async function init() {
     }
 
     async function write(data) {
-        // const send = pico.write(data, err => {
-        //     if (err) {
-        //         return console.log('Error on write: ', err.message);
-        //     }
-        //     console.log(data);
-        // });
+        const send = pico.write(data, err => {
+            if (err) {
+                return console.log('Error on write: ', err.message);
+            }
+            console.log(data);
+        });
         console.log(data)
     }
 
