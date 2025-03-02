@@ -12,41 +12,52 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 
-// SerialPort.list().then(ports => {
-//     ports.forEach(port => {
-//         console.log(port.path);
-//     });
-// }).catch(err => {
-//     console.error('Error listing ports', err);
-// });
+SerialPort.list().then(ports => {
+    ports.forEach(port => {
+        console.log(port.path);
+    });
+}).catch(err => {
+    console.error('Error listing ports', err);
+});
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-async function rightBlink() {
+async function lightBlink(direction) {
+    let letter;
+
+    switch (direction) {
+        case "left":
+            letter = "L"
+            break;
+        case "right":
+            letter = "R"
+            break;
+    }
+
     for (let i = 0; i < 5; i++) {
-        const sendB = pico.write('B', err => {
+        const sendB = pico.write(letter, err => {
             if (err) {
                 return console.log('Error on write: ', err.message);
             }
-            console.log('B');
+            console.log(letter);
         })
         await sleep(1000)
         console.log(sendB)
-        const sendF = pico.write('F', err => {
+        const sendG = pico.write('G', err => {
             if (err) {
                 return console.log('Error on write: ', err.message);
             }
             console.log('F');
         });
-        console.log(sendF)
+        console.log(sendG)
         await sleep(1000)
     }
 }
 
 const pico = new SerialPort({
-    path: '/dev/tty.usbmodem1201',
+    path: '/dev/tty.usbmodem11301',
     baudRate: 9600,
 })
 
@@ -55,9 +66,38 @@ app.get('/', (req, res) => {
 });
 
 app.post('/right', async (req, res) => {
-    await rightBlink();
+    await lightBlink("right");
 
 })
+
+app.post('/left', async (req, res) => {
+    await lightBlink("left");
+
+})
+
+app.post('/openAll', async (req, res) => {
+    const sendB = pico.write('B', err => {
+        if (err) {
+            return console.log('Error on write: ', err.message);
+        }
+        console.log('B');
+    });
+    console.log(sendB)
+    await sleep(1000)
+})
+
+
+app.post('/closeAll', async (req, res) => {
+    const sendF = pico.write('F', err => {
+        if (err) {
+            return console.log('Error on write: ', err.message);
+        }
+        console.log('F');
+    });
+    console.log(sendF)
+    await sleep(1000)
+})
+
 
 https.createServer({
     key: fs.readFileSync('server.key'),
