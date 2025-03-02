@@ -11,6 +11,8 @@
   "dependencies": {
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "express-ws": "^5.0.2",
+    "serialport": "^13.0.0"
   }
 }
