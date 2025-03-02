@@ -1,6 +1,7 @@
 # Human Turn Signals
 
-Ever wanted to become a car? Now YOU can use turn signals as well!  
+Ever wanted to become a car? Now YOU can use turn signals & lights as well!  
+
 Toot your horn, and use the break and turn signals to let those around you know where you're walking. (manitej not included)
 
 ## Video Demo
