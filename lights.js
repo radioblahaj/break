@@ -4,6 +4,10 @@ const { SerialPort } = require('serialport');
 async function init() {
 
     let picoPort;
+    let stopLeft = false;
+    let stopRight = false;
+    let leftInProg = false;
+    let rightInProg = false;
 
     await SerialPort.list().then(ports => {
         ports.forEach(port => {
@@ -12,7 +16,7 @@ async function init() {
             }
 
             console.log(port.path);
-            if (port.path.startsWith('/dev/ttyACM0')) {
+            if (port.path.startsWith('/dev/tty.usbmodem')) {
                 picoPort = port.path;
             }
         });
@@ -50,12 +54,19 @@ async function init() {
     }
 
     async function rightBlink() {
-        for (let i = 0; i < 5; i++) {
+        if (rightInProg) return;
+        console.log('------------------- right -------------------')
+
+        rightInProg = true
+        stopLeft = true
+        for (let i = 0; i < 5 && !stopRight; i++) {
             await rightLight()
-            await sleep(1000)
+            await sleep(500)
             await offLight()
-            await sleep(1000)
+            await sleep(500)
         }
+        stopRight = false
+        rightInProg = false
     }
 
     // Left Light
@@ -64,16 +75,27 @@ async function init() {
     }
 
     async function leftBlink() {
-        for (let i = 0; i < 5; i++) {
+        if (leftInProg) return
+        console.log('------------------- left -------------------') 
+
+        leftInProg = true
+        stopRight = true
+        for (let i = 0; i < 5 && !stopLeft; i++) {
             await leftLight()
-            await sleep(1000)
+            await sleep(500)
             await offLight()
-            await sleep(1000)
+            await sleep(500)
         }
+        stopLeft = false
+        leftInProg = false
     }
 
     // Break Light
     async function breakLight() {
+        console.log('------------------- brake -------------------')
+
+        await write('B')
+        await sleep(2000)
         await write('F')
     }
 

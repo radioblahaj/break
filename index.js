@@ -21,20 +21,22 @@ httpsApp.get('/', (req, res) => {
     res.sendFile(__dirname + '/site/index.html')
 });
 
-httpApp.post('/left', async (req, res) => {
+httpsApp.post('/left', async (req, res) => {
     await lights.leftBlink();
 
     return res.json({ success: true });
 });
 
-httpApp.post('/right', async (req, res) => {
+httpsApp.post('/right', async (req, res) => {
     await lights.rightBlink();
+
 
     return res.json({ success: true });
 });
 
-httpApp.post('/break', async (req, res) => {
+httpsApp.post('/break', async (req, res) => {
     await lights.breakLight();
+
 
     return res.json({ success: true });
 });

@@ -38,3 +38,8 @@ button.orange {
     background-color: orangered;
     color: white;
 }
+
+button.red {
+    background-color: red;
+    color: white;
+}
