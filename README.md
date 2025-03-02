@@ -33,6 +33,6 @@ Connect each LED module using wires to be powered with NPN transistors.
 
 ### Software
 
-1. Flash `sy.ino` onto the Pico.
-2. On a computer teathered to the pico via USB cable, run the ExpressJS server.
+1. Flash `sy.ino` onto the Pico
+2. On a computer teathered to the pico via USB cable, install the node modules (`npm install`) and run the ExpressJS server (`node index.js`)
 3. On a mobile device, navigate the https://[computer ip]:3000
