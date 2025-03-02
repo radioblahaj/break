@@ -13,6 +13,11 @@ SerialPort.list().then(ports => {
     console.error('Error listing ports', err);
 });
 
+if (!picoPort) {
+    console.error('Pico port not found');
+    process.exit(1);
+}
+
 
 const pico = new SerialPort({
     path: picoPort,
