@@ -7,9 +7,13 @@ async function init() {
 
     await SerialPort.list().then(ports => {
         ports.forEach(port => {
-            console.log(port);
-            if (port.startsWith('/dev/ttyACM0')) {
-                picoPort = port;
+            if (!port || !port.path) {
+                return;
+            }
+
+            console.log(port.path);
+            if (port.path.startsWith('/dev/ttyACM0')) {
+                picoPort = port.path;
             }
         });
     }).catch(err => {
